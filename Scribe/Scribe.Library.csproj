@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>Scribe.Library</AssemblyName>
+    <RootNamespace>ScribeLibrary</RootNamespace>
   </PropertyGroup>
 
 </Project>
