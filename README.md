@@ -1,3 +1,14 @@
+# Scribe
+## A .NET File Writer 
+
+## Getting Started
+Scribe uses C# attributes to denote a file structure in code form. The structure is then translated into TextWriter that can be used to write to disk.
+
+
+```
+
+```
+
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/elliotschroeder/Scribe/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
