@@ -59,5 +59,16 @@ namespace ScribeTests.TestObjects
         public string MerchantLastName { get; set; }
     }
 
+    public class BusinessWithPropertyThatUsesCustomPadding
+    {
+        [FixedLengthField(0, 10, Alignment.Left, Padding.Custom, 'X')]
+        public string BusinessName { get; set; }
+     
+    }
 
+    public class BusinessWithPropertyThatUsesCustomerPaddingNoPaddingChar
+    {
+        [FixedLengthField(0, 5, Alignment.Left, Padding.Custom)]
+        public string BusinessDBA { get; set; }
+    }
 }

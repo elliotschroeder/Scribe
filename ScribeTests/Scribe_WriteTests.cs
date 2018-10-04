@@ -12,6 +12,7 @@ namespace ScribeTests
         public void Scribe_Write_Class_Writes_Properties_To_String_Value()
         {
             var expected = "12345000000000000000BusinessName        5555555555          4567890000000000000000000000000000010000";
+            var fieldFormatter = new FieldFormatter(); 
             var business = new SimpleBusiness()
             {
                 BusinessId = 12345,
@@ -23,7 +24,7 @@ namespace ScribeTests
 
             using (var writer = new StringWriter())
             {
-                IScribe scribe = new Scribe(writer);
+                IScribe scribe = new Scribe(writer, fieldFormatter);
                 scribe.Write(business);
                 var actual = writer.ToString();
 
@@ -36,6 +37,7 @@ namespace ScribeTests
         {
             var expected = "12345000000000000000BusinessName        5555555555          45678900000000000000";
 
+            var fieldFormatter = new FieldFormatter();
             var business = new BusinessWithOneFieldWithoutAttribute()
             {
                 BusinessId = 12345,
@@ -47,7 +49,7 @@ namespace ScribeTests
 
             using (var writer = new StringWriter())
             {
-                IScribe scribe = new Scribe(writer);
+                IScribe scribe = new Scribe(writer, fieldFormatter);
                 scribe.Write(business);
                 var actual = writer.ToString();
 
@@ -61,13 +63,14 @@ namespace ScribeTests
         {
             var expected = "54321     John           Smith          8765309   Jenny          Smith          ";
 
+            var fieldFormatter = new FieldFormatter();
             var merchantA = new Merchant() { MerchantFirstName = "John", MerchantLastName = "Smith", MerchantId = "54321" };
             var merchantB = new Merchant() { MerchantFirstName = "Jenny", MerchantLastName = "Smith", MerchantId = "8765309" };
             IList<Merchant> merchants = new List<Merchant>() { merchantA, merchantB };           
 
             using (var writer = new StringWriter())
             {
-                IScribe scribe = new Scribe(writer);
+                IScribe scribe = new Scribe(writer, fieldFormatter);
                 scribe.Write(merchants);
                 
                 var actual = writer.ToString();
@@ -81,13 +84,14 @@ namespace ScribeTests
         {
             var expected = string.Empty.PadLeft(80);
 
+            var fieldFormatter = new FieldFormatter();
             var merchantA = new Merchant() { MerchantFirstName = null, MerchantLastName = null, MerchantId = null };
             var merchantB = new Merchant() { MerchantFirstName = null, MerchantLastName = null, MerchantId = null };
             IList<Merchant> merchants = new List<Merchant>() { merchantA, merchantB };
 
             using (var writer = new StringWriter())
             {
-                IScribe scribe = new Scribe(writer);
+                IScribe scribe = new Scribe(writer, fieldFormatter);
                 scribe.Write(merchants);
 
                 var actual = writer.ToString();
@@ -100,6 +104,8 @@ namespace ScribeTests
         public void Scribe_Write_Only_Writes_Public_Properties_Of_Classes()
         {
             var expected = "12345000000000000000BusinessName        5555555555          45678900000000000000";
+
+            var fieldFormatter = new FieldFormatter();
             var business = new BusinessWithPrivateProperty()
             {
                 BusinessId = 12345,
@@ -110,7 +116,7 @@ namespace ScribeTests
 
             using (var writer = new StringWriter())
             {
-                IScribe scribe = new Scribe(writer);
+                IScribe scribe = new Scribe(writer, fieldFormatter);
                 scribe.Write(business);
                 var actual = writer.ToString();
 
@@ -132,6 +138,7 @@ namespace ScribeTests
                 + "00000000000000010000"
                 + Environment.NewLine;
 
+            var fieldFormatter = new FieldFormatter();
             var business = new SimpleBusinessWithFixedLengthFileAttribute()
             {
                 BusinessId = 12345,
@@ -143,7 +150,43 @@ namespace ScribeTests
 
             using (var writer = new StringWriter())
             {
-                IScribe scribe = new Scribe(writer);
+                IScribe scribe = new Scribe(writer, fieldFormatter);
+                scribe.Write(business);
+                var actual = writer.ToString();
+
+                Assert.Equal(expected, actual);
+            }
+        }
+
+        [Fact]
+        public void Scibe_Write_Property_With_Custom_Char_Writes()
+        {
+            var expected = "ZZZZZXXXXX";
+
+            var fieldFormatter = new FieldFormatter();
+            var business = new BusinessWithPropertyThatUsesCustomPadding() { BusinessName = "ZZZZZ" };
+
+            using (var writer = new StringWriter())
+            {
+                IScribe scribe = new Scribe(writer, fieldFormatter);
+                scribe.Write(business);
+                var actual = writer.ToString();
+
+                Assert.Equal(expected, actual);
+            }
+        }
+
+        [Fact]
+        public void Scibe_Write_Property_With_Custom_Padding_No_Char_Supplied_Writes_Values()
+        {
+            var expected = "ZZZ  ";
+
+            var fieldFormatter = new FieldFormatter();
+            var business = new BusinessWithPropertyThatUsesCustomerPaddingNoPaddingChar() { BusinessDBA = "ZZZ" };
+
+            using (var writer = new StringWriter())
+            {
+                IScribe scribe = new Scribe(writer, fieldFormatter);
                 scribe.Write(business);
                 var actual = writer.ToString();
 

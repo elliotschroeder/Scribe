@@ -9,14 +9,16 @@ namespace ScribeLibrary
     public class Scribe : IScribe
     {
         private readonly TextWriter _textWriter;
+        private readonly IFieldFormatter _fieldFormatter;
 
         /// <summary>
         /// Creates Scribe with ability to write to a stream
         /// </summary>
         /// <param name="textWriter"></param>
-        public Scribe(TextWriter textWriter)
+        public Scribe(TextWriter textWriter, IFieldFormatter formatter)
         {
             _textWriter = textWriter;
+            _fieldFormatter = formatter;
         }
 
         public Scribe()
@@ -46,12 +48,11 @@ namespace ScribeLibrary
 
                 var fieldValue = prop.GetValue(record) == null ? string.Empty : prop.GetValue(record).ToString();
 
-                dict.Add(attr.FieldOrder, WriteField(fieldValue, attr.FieldLength, attr.Alignment, attr.Padding));
+                dict.Add(attr.FieldOrder, _fieldFormatter.WriteField(fieldValue, attr.FieldLength, attr.Alignment, attr.Padding, attr.CustomPaddingValue));
             }
 
             foreach (var field in dict.OrderBy(d => d.Key))
             {
-                //_textWriter.Write(field.Value);
                 file += field.Value;
             }
 
@@ -59,65 +60,12 @@ namespace ScribeLibrary
 
             if (fixedFileAttr != null)
             {
-                file = AddLineEndingsToFixedFile(file, fixedFileAttr.LineLength);
+                file = _fieldFormatter.FormatLineEndings(file, fixedFileAttr.LineLength);
             }
 
             _textWriter.Write(file);
 
-        }
-
-        private string AddLineEndingsToFixedFile(string file, int lineLength)
-        {      
-            var numberOfNewLineCharcters = file.Length / lineLength;
-
-            var index = lineLength;
-            for (int i = 0; i < numberOfNewLineCharcters; i++)
-            {
-                file = file.Insert(index, Environment.NewLine);
-                index += lineLength + Environment.NewLine.Length;
-            }
-
-            return file;
-        }
-
-        public string WriteField(string value, int fieldLength, Alignment alignment, Padding padding)
-        {
-            if (value.Length > fieldLength)
-            {
-                throw new ArgumentException();
-            }
-
-            if (fieldLength - value.Length > 0)
-            {
-                switch (padding)
-                {
-                    case Padding.Spaces:
-                        return FormatField(value, fieldLength, ' ', alignment);
-                    case Padding.Zeros:
-                        return FormatField(value, fieldLength, '0', alignment);
-                    default:
-                        return FormatField(value, fieldLength, ' ', alignment);
-                }
-            }
-            else
-            {
-                return value;
-            }
-
-        }
-
-        public string FormatField(string value, int fieldLength, char paddingValue, Alignment alignment)
-        {
-            switch (alignment)
-            {
-                case Alignment.Left:
-                    return value.PadRight(fieldLength, paddingValue);
-                case Alignment.Right:
-                    return value.PadLeft(fieldLength, paddingValue);
-                default:
-                    return value;
-            }
-        }
+        }      
 
         public void Write<T>(IList<T> records)
         {

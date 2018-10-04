@@ -9,7 +9,7 @@
         private readonly int _fieldLength;
         private readonly Alignment _alignment;
         private readonly Padding _paddingValue;
-        private readonly string _customPaddingValue;
+        private readonly char _customPaddingValue;
         private readonly int _order;
 
         /// <summary>
@@ -20,7 +20,7 @@
         /// <param name="Alignment"></param>
         /// <param name="Padding"></param>
         /// <param name="CustomPaddingValue"></param>
-        public FixedLengthField(int fieldOrder, int fieldLength, Alignment alignment, Padding padding, string customPaddingValue)
+        public FixedLengthField(int fieldOrder, int fieldLength, Alignment alignment, Padding padding, char customPaddingValue)
         {
             _order = fieldOrder;
             _fieldLength = fieldLength;
@@ -61,7 +61,7 @@
         public int FieldLength => _fieldLength;
         public Alignment Alignment => _alignment;
         public Padding Padding => _paddingValue;
-        public string CustomPaddingValue => _customPaddingValue;
+        public char CustomPaddingValue => _customPaddingValue;
 
 
     }
