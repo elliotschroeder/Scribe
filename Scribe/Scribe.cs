@@ -31,6 +31,7 @@ namespace ScribeLibrary
 
         public void Write<T>(T record)
         {
+            var file = string.Empty;
             PropertyInfo[] properties = record.GetType().GetProperties();
             Dictionary<int, string> dict = new Dictionary<int, string>();
 
@@ -43,15 +44,40 @@ namespace ScribeLibrary
                     continue;
                 }
 
-                var fieldValue = prop.GetValue(record).ToString() ?? string.Empty;
+                var fieldValue = prop.GetValue(record) == null ? string.Empty : prop.GetValue(record).ToString();
 
                 dict.Add(attr.FieldOrder, WriteField(fieldValue, attr.FieldLength, attr.Alignment, attr.Padding));
             }
 
             foreach (var field in dict.OrderBy(d => d.Key))
             {
-                _textWriter.Write(field.Value);
+                //_textWriter.Write(field.Value);
+                file += field.Value;
             }
+
+            var fixedFileAttr = record.GetType().GetCustomAttribute<FixedLengthFile>();
+
+            if (fixedFileAttr != null)
+            {
+                file = AddLineEndingsToFixedFile(file, fixedFileAttr.LineLength);
+            }
+
+            _textWriter.Write(file);
+
+        }
+
+        private string AddLineEndingsToFixedFile(string file, int lineLength)
+        {      
+            var numberOfNewLineCharcters = file.Length / lineLength;
+
+            var index = lineLength;
+            for (int i = 0; i < numberOfNewLineCharcters; i++)
+            {
+                file = file.Insert(index, Environment.NewLine);
+                index += lineLength + Environment.NewLine.Length;
+            }
+
+            return file;
         }
 
         public string WriteField(string value, int fieldLength, Alignment alignment, Padding padding)
@@ -98,7 +124,7 @@ namespace ScribeLibrary
             foreach (var record in records)
             {
                 Write(record);
-            }            
+            }
         }
     }
 }

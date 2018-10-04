@@ -18,8 +18,14 @@ namespace ScribeTests.TestObjects
         public string TaxId { get; set; }
     }
 
-    [FixedLengthFile(100)]
     public class SimpleBusiness : Business
+    {
+        [FixedLengthField(4, 20, Alignment.Right, Padding.Zeros)]
+        public string CashOnHand { get; set; }
+    }
+
+    [FixedLengthFile(20)]
+    public class SimpleBusinessWithFixedLengthFileAttribute : Business
     {
         [FixedLengthField(4, 20, Alignment.Right, Padding.Zeros)]
         public string CashOnHand { get; set; }
@@ -36,6 +42,11 @@ namespace ScribeTests.TestObjects
         public string Something { get; set; }
     }
 
+    public class BusinessWithPrivateProperty : Business
+    {
+        private int PrivateInteger { get; set; }
+    }
+
     public class Merchant
     {
         [FixedLengthField(0, 10, Alignment.Left, Padding.Spaces)]
@@ -47,5 +58,6 @@ namespace ScribeTests.TestObjects
         [FixedLengthField(2, 15, Alignment.Left, Padding.Spaces)]
         public string MerchantLastName { get; set; }
     }
+
 
 }

@@ -16,5 +16,7 @@
         {
             _lineLength = lineLength;
         }
+
+        public int LineLength => _lineLength;
     }
 }
