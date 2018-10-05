@@ -1,8 +1,38 @@
-## Welcome to GitHub Pages
+# Scribe
+## A .NET File Writer 
 
-You can use the [editor on GitHub](https://github.com/elliotschroeder/Scribe/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+## Getting Started
+  Scribe uses C# attributes to denote a file structure in code form. The structure is then translated into TextWriter that can be used to write to disk.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+  To use Scribe, affix your class properties with the FixedLengthFieldAttribute.
+```
+[FixedLengthField(0, 20, Alignment.Left, Padding.Zeros)]`
+        `public int BusinessId { get; set; }
+```
+### Options for FixedLengthFile Attribute
+
+ There are a number of options available to you for constructing a fixed length field. At minimum it requires an ordering and field length. If you do not supply the other parameters, default values will be used. Below are some of the other options available:
+ 
+ ```
+ //Alignment will be defaulted to Left and Padding will default to Spaces
+ [FixedLengthField(1, 20)]
+ ```
+  FixedLengthField attribute allows for custom padding and the ability to pass a specific char for padding purposes.
+ ```
+ //If no custom char is provided, a space will be used by default
+ [FixedLengthField(0, 20, Alignment.Left, Padding.Custom, 'X')]
+ ```
+  FixedLengthField attribute allows users to define if a field is right or left justified. 
+ 
+  ```
+   [FixedLengthField(1, 20, Alignment.Right, Padding.Spaces)]
+  ```
+   FixedLengthField attribute allows for users to pad spaces or zeros if needed.
+  ```
+  [FixedLengthField(1, 20, Alignment.Right, Padding.Zeros)]
+  ```
+
+  
 
 ### Markdown
 
