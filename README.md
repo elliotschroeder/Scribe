@@ -17,22 +17,21 @@
  //Alignment will be defaulted to Left and Padding will default to Spaces
  [FixedLengthField(1, 20)]`
  ```
- 
+  FixedLengthField attribute allows for custom padding and the ability to pass a specific char for padding purposes.
  ```
  //If no custom char is provided, a space will be used by default
  [FixedLengthField(0, 20, Alignment.Left, Padding.Custom, 'X')]`
  ```
-  FixedLengthField attribute allows for custom padding and the ability to pass a specific char for padding purposes.
-  
+  FixedLengthField attribute allows users to define if a field is right or left justified. 
+ 
   ```
    [FixedLengthField(1, 20, Alignment.Right, Padding.Spaces)]`
   ```
-  FixedLengthField attribute allows users to define if a field is right or left justified. 
-  
+   FixedLengthField attribute allows for users to pad spaces or zeros if needed.
   ```
   [FixedLengthField(1, 20, Alignment.Right, Padding.Zeros)]`
   ```
-  FixedLengthField attribute allows for users to pad spaces or zeros if needed.
+
   
 
 ### Markdown
