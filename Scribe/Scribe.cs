@@ -35,7 +35,7 @@ namespace ScribeLibrary
         {
             var file = string.Empty;
             PropertyInfo[] properties = record.GetType().GetProperties();
-            Dictionary<int, string> dict = new Dictionary<int, string>();
+            Dictionary<int, string> fieldsToWrite = new Dictionary<int, string>();
 
             foreach (var prop in properties)
             {
@@ -48,10 +48,10 @@ namespace ScribeLibrary
 
                 var fieldValue = prop.GetValue(record) == null ? string.Empty : prop.GetValue(record).ToString();
 
-                dict.Add(attr.FieldOrder, _fieldFormatter.WriteField(fieldValue, attr.FieldLength, attr.Alignment, attr.Padding, attr.CustomPaddingValue));
+                fieldsToWrite.Add(attr.FieldOrder, _fieldFormatter.WriteField(fieldValue, attr.FieldLength, attr.Alignment, attr.Padding, attr.CustomPaddingValue));
             }
 
-            foreach (var field in dict.OrderBy(d => d.Key))
+            foreach (var field in fieldsToWrite.OrderBy(d => d.Key))
             {
                 file += field.Value;
             }

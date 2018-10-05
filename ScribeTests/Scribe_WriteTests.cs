@@ -2,6 +2,7 @@ using ScribeLibrary;
 using ScribeTests.TestObjects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Xunit;
 namespace ScribeTests
@@ -192,6 +193,44 @@ namespace ScribeTests
 
                 Assert.Equal(expected, actual);
             }
+        }
+
+        [Fact(Skip ="Performance Test")]
+        public void Scribe_Write_Performance_Test()
+        {
+            var business = new SimpleBusiness()
+            {
+                BusinessId = 12345,
+                BusinessName = "BusinessName",
+                BusinessTelephoneNumber = "5555555555",
+                TaxId = "456789",
+                CashOnHand = "10000"
+            };
+
+            var businessList = new List<SimpleBusiness>();
+
+            for (int i = 0; i < 1000000000; i++)
+            {
+                businessList.Add(business);
+            }
+
+            using (var writer = new StringWriter())
+            {
+                var stopwatch = new Stopwatch();
+
+                IFieldFormatter fieldFormatter = new FieldFormatter();
+                IScribe scribe = new Scribe(writer, fieldFormatter);
+
+                stopwatch.Start();
+                scribe.Write(businessList);
+                stopwatch.Stop();
+
+                var timeToRun = stopwatch.Elapsed.TotalSeconds;
+
+                Assert.True(timeToRun <= 15);
+
+            }
+
         }
     }
 }
